@@ -1,6 +1,9 @@
 from selenium import webdriver
 import time
 
+import pandas as pd
+import numpy as np
+
 # Insert source package path to import modules from config
 import sys
 sys.path.insert(0, sys.path[0].split('src')[0] + 'src')
@@ -39,12 +42,26 @@ if __name__ == "__main__":
     driver = get_driver()
     launch(URL, driver)
 
-    ids = driver.find_elements_by_xpath('//*[@id]')
-    for ii in ids:
-        if ii.tag_name in ['input', 'textarea', 'button']:
-            print(ii.tag_name)  # tag name of id
-            print(ii.get_attribute('id'))  # id name as string
-            print(ii.text)  # id name as string
-            print('###############')
-            break
+    inputs = list()  # to contain all input elements
+
+    tag_types = ['//*[@id]', '//*[@class]', '//*[@name]']
+    for tag_type in tag_types:
+        # get only text from tag. e.g. id, class, name
+        tag_type_text = tag_type.split('[')[1].split(']')[0][1:]
+
+        tags = driver.find_elements_by_xpath(tag_type)
+        for tag in tags:
+            if tag.tag_name in ['input', 'textarea', 'button']:
+                _input = dict()
+                # _input['tag_type'] = tag_type_text
+                _input['tag_id'] = tag.get_attribute('id')
+                _input['tag_class'] = tag.get_attribute('class')
+                _input['tag_name'] = tag.get_attribute('name')
+                _input['tag_text'] = tag.text
+                inputs.append(_input)
+    
+    inputs=list(np.unique(np.array(inputs).astype(str)))
+
+    for _input in inputs:
+        print(_input)
     driver.close()

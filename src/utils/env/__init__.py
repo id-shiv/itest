@@ -23,7 +23,7 @@ def create_dir(directory: str):
         print(f'directory {directory} already exists')
         return True
 
-def file_write(path: str, content):
+def file_write(path: str, content, overwrite: bool=False):
     """ Writes the content to a file
     :param path: file path
     :param content: content to be written to file
@@ -34,8 +34,11 @@ def file_write(path: str, content):
 
     try:  # Write to file
         print(f'writing to file {path}')
+        if overwrite:
+            with open(path, 'w') as f:
+                f.write('')
         with open(path, 'a') as f:
-            f.write('\n' + content)
+            f.write(content + '\n')
     except Exception as e:
         print(e)
         print(f'failed to write the content to {path}')
@@ -47,3 +50,4 @@ if __name__ == "__main__":
     # Test above methods
     # create_dir('out/test')
     # file_write('out/test/test.txt', 'test content')
+    pass
