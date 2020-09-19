@@ -1,0 +1,7 @@
+# environment
+venv/
+__pycache__/
+.vscode/
+
+# output files
+out/
